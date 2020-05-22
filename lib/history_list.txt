@@ -1,3 +1,27 @@
+---------------------------------------------------------------------
+# to array code .py
+
+fr = open('./history_list.txt', 'r')
+fw = open('./history_list_code.txt', 'w')
+lines = fr.readlines()
+
+for line in lines:
+    data = line.split('년 ')
+    if len(data) < 2:
+        continue
+
+    year = data[0]
+    act = line[len(year)+2:-1]    
+    code = 'korean[' + year + '].add(\'' + act + '\');'
+    fw.write(code + '\n')
+
+fr.close()
+fw.close()
+---------------------------------------------------------------------
+
+// https://ko.wikipedia.org/wiki/%ED%95%9C%EA%B5%AD%EC%82%AC_%EC%97%B0%ED%91%9C
+// 2020-05-20
+
 기원전 70만년 수렵경제 - 뗀석기(石), 골각기(骨)
 기원전 70만년 주거생활 - 동굴이나 바위그늘 (전기) , 막집 (후기)
 
