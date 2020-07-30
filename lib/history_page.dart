@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:korean_history/history_list.dart';
 
 class HistoryPage extends StatefulWidget {
   _HistoryPage createState() => _HistoryPage();
 }
 
 class _HistoryPage extends State<HistoryPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,28 +14,32 @@ class _HistoryPage extends State<HistoryPage> {
         title: const Text("한국사 연표"),
       ),
       body: Center(
-        child: _buildStepper(),
+        child: _buildEvents(),
       ),
     );
   }
 
-  Widget _buildStepper() {
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      color: Colors.white,
-      child: Stepper(
-        steps: [
-          _buildStep(),
-        ],
-      ),
+  Widget _buildEvents() {
+    KoreanHistory history = new KoreanHistory();
+    List<int> years = history.getYears();
+    List<List<String>> events = history.getEvents();
+
+    return ListView.separated(
+      padding: const EdgeInsets.all(8),
+      itemCount: years.length,
+      itemBuilder: (BuildContext context, int index) {
+        return _buildRow(context, years[index], events[years[index]]);
+      },
+      separatorBuilder: (BuildContext context, int index) => const Divider(),
     );
   }
-  
-  Step _buildStep() {
-    return Step(
-        title: Text("First"),
-        subtitle: Text("subtitle"),
-        content: Text("content"),
-        isActive: true);
+
+  Widget _buildRow(BuildContext context, int year, List<String> event) {
+    return ListTile(
+      title: Text("${year}년"),
+      subtitle:
+          Text("${event.reduce((value, element) => value + '\n' + element)}"),
+      onTap: () {},
+    );
   }
 }

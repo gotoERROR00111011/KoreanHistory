@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'history_page.dart';
+import 'package:korean_history/game_page.dart';
+import 'package:korean_history/history_page.dart';
+//import 'bulls_and_cows.dart';
 
 void main() => runApp(MyApp());
 
@@ -23,8 +24,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPage extends State<MainPage> {
-  final List<String> _menu = <String>["게임", "연표"];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,29 +31,55 @@ class _MainPage extends State<MainPage> {
           centerTitle: true,
           title: Text("한국사 연표"),
         ),
-        body: Center(
-          child: _buildMenu(),
-        ));
+        body: _buildMenu());
   }
 
   Widget _buildMenu() {
-    return ListView.builder(
-        itemCount: _menu.length,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildRow(context, index);
-        });
+    return Center(
+        child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[_play(), _whiteSpace(), _history()],
+    ));
   }
 
-  Widget _buildRow(BuildContext context, int index) {
-    return ListTile(
-      title: Text(_menu[index]),
-      subtitle: Text('Here is a second line'),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HistoryPage()),
-        );
-      },
+  Widget _play() {
+    return ButtonTheme(
+      minWidth: 300.0,
+      height: 100.0,
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => GamePage()),
+          );
+        },
+        textColor: Colors.white,
+        padding: const EdgeInsets.all(0.0),
+        child: const Text("Play", style: TextStyle(fontSize: 50)),
+      ),
     );
+  }
+
+  Widget _history() {
+    return ButtonTheme(
+      minWidth: 300.0,
+      height: 100.0,
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HistoryPage()),
+          );
+        },
+        textColor: Colors.white,
+        padding: const EdgeInsets.all(0.0),
+        child: const Text("History", style: TextStyle(fontSize: 50)),
+      ),
+    );
+  }
+
+  Widget _whiteSpace() {
+    return const SizedBox(height: 30);
   }
 }
