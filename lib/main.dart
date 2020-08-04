@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:korean_history/game_page.dart';
 import 'package:korean_history/history_page.dart';
-//import 'bulls_and_cows.dart';
 
 void main() => runApp(MyApp());
 
