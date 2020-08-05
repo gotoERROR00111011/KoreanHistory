@@ -9,24 +9,25 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePage extends State<GamePage> {
-  Game game = new Game();
   static KoreanHistory history = new KoreanHistory();
   static List<List<String>> events = history.getEvents();
 
+  Game game = new Game();
   int gameCount = 0;
   List<Widget> gameRecord = List<Widget>();
-
-  int _currentIntValue = 0;
-  NumberPicker numberPickers;
+  List<int> _currentIntValue = [1, 9, 9, 5];
+  List<NumberPicker> numberPickers = List<NumberPicker>(4);
 
   void _initializeNumberPicker() {
-    numberPickers = new NumberPicker.integer(
-      initialValue: _currentIntValue,
-      minValue: 0,
-      maxValue: 9,
-      step: 1,
-      onChanged: (value) => setState(() => _currentIntValue = value),
-    );
+    for (int i = 0; i < 4; ++i) {
+      numberPickers[i] = new NumberPicker.integer(
+        initialValue: _currentIntValue[i],
+        minValue: 0,
+        maxValue: 9,
+        step: 1,
+        onChanged: (value) => setState(() => _currentIntValue[i] = value),
+      );
+    }
   }
 
   @override
@@ -41,15 +42,15 @@ class _GamePage extends State<GamePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          _quiz(),
-          _record(),
-          _play(),
+          _buildQuiz(),
+          _buildPlay(),
+          _buildRecord(),
         ],
       )),
     );
   }
 
-  Widget _quiz() {
+  Widget _buildQuiz() {
     List<String> event = events[game.getAnswer()];
     return Card(
       child: Column(
@@ -80,34 +81,39 @@ class _GamePage extends State<GamePage> {
     );
   }
 
-  Widget _play() {
+  Widget _buildPlay() {
     _initializeNumberPicker();
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          _picker(),
-          _try(),
+          _buildNumberPicekr(),
+          _buildTryButton(),
         ],
       ),
     );
   }
 
-  Widget _picker() {
+  Widget _buildNumberPicekr() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        numberPickers,
+        numberPickers[0],
+        numberPickers[1],
+        numberPickers[2],
+        numberPickers[3],
       ],
     );
   }
 
-  Widget _try() {
+  Widget _buildTryButton() {
     return ButtonTheme(
       minWidth: 500.0,
       height: 50.0,
       child: RaisedButton(
-        onPressed: () {},
+        onPressed: () {
+          _buildScore();
+        },
         textColor: Colors.white,
         padding: const EdgeInsets.all(0.0),
         child: const Text("Try", style: TextStyle(fontSize: 30)),
@@ -115,28 +121,32 @@ class _GamePage extends State<GamePage> {
     );
   }
 
-  Widget _record() {
+  Widget _buildRecord() {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: gameRecord,
     );
   }
 
-  Widget _score() {
+  void _buildScore() {
+    int myAnswer = 0;
+    for (int i = 0; i < 4; ++i) {
+      myAnswer *= 10;
+      myAnswer += _currentIntValue[i];
+    }
     gameCount++;
-    return Card(
+    gameRecord.add(Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
             leading: Text('$gameCount'),
-            title: Text('1999'),
+            title: Text('$myAnswer, ${game.getAnswer()}'),
             subtitle: Text('0 Strike, 0 Ball'),
           ),
         ],
       ),
-    );
-    //gameRecord.add(Text('TEST'));
-    //setState(() {});
+    ));
+    setState(() {});
   }
 }
