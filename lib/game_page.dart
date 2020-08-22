@@ -12,23 +12,11 @@ class _GamePage extends State<GamePage> {
   static KoreanHistory history = new KoreanHistory();
   static List<List<String>> events = history.getEvents();
 
-  Game game = new Game();
-  int gameCount = 0;
-  List<Widget> gameRecord = List<Widget>();
-  List<int> _currentIntValue = [1, 9, 9, 5];
   List<NumberPicker> numberPickers = List<NumberPicker>(4);
+  List<int> _currentIntValue = [1, 9, 9, 5];
 
-  void _initializeNumberPicker() {
-    for (int i = 0; i < 4; ++i) {
-      numberPickers[i] = new NumberPicker.integer(
-        initialValue: _currentIntValue[i],
-        minValue: 0,
-        maxValue: 9,
-        step: 1,
-        onChanged: (value) => setState(() => _currentIntValue[i] = value),
-      );
-    }
-  }
+  Game game = new Game();
+  List<int> gameScores = [];
 
   @override
   Widget build(BuildContext context) {
@@ -37,29 +25,26 @@ class _GamePage extends State<GamePage> {
         centerTitle: true,
         title: const Text('한국사 연표'),
       ),
-      body: Center(
-          child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
+      body: Column(
+        children: [
           _buildQuiz(),
           _buildPlay(),
           _buildRecord(),
         ],
-      )),
+      ),
     );
   }
 
   Widget _buildQuiz() {
     List<String> event = events[game.getAnswer()];
+    String question = event.reduce((value, element) => value + '\n' + element);
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.history),
-            title: Text(
-                '${event.reduce((value, element) => value + '\n' + element)}'),
+            title: Text('${question}'),
             subtitle: Text('이 사건이 일어난 연도는?'),
           ),
           ButtonBar(
@@ -122,9 +107,20 @@ class _GamePage extends State<GamePage> {
   }
 
   Widget _buildRecord() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: gameRecord,
+    return Expanded(
+      child: ListView.builder(
+        //padding: const EdgeInsets.all(8),
+        itemCount: gameScores.length,
+        itemBuilder: (BuildContext context, int index) {
+          return Card(
+            child: ListTile(
+              leading: Text('${index + 1}'),
+              title: Text('${gameScores[index]}'),
+              subtitle: Text('0 Strike, 0 Ball'),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -134,19 +130,20 @@ class _GamePage extends State<GamePage> {
       myAnswer *= 10;
       myAnswer += _currentIntValue[i];
     }
-    gameCount++;
-    gameRecord.add(Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: Text('$gameCount'),
-            title: Text('$myAnswer, ${game.getAnswer()}'),
-            subtitle: Text('0 Strike, 0 Ball'),
-          ),
-        ],
-      ),
-    ));
-    setState(() {});
+    setState(() {
+      gameScores.add(myAnswer);
+    });
+  }
+
+  void _initializeNumberPicker() {
+    for (int i = 0; i < 4; ++i) {
+      numberPickers[i] = new NumberPicker.integer(
+        initialValue: _currentIntValue[i],
+        minValue: 0,
+        maxValue: 9,
+        step: 1,
+        onChanged: (value) => setState(() => _currentIntValue[i] = value),
+      );
+    }
   }
 }
