@@ -12,11 +12,10 @@ class _GamePage extends State<GamePage> {
   static KoreanHistory history = new KoreanHistory();
   static List<List<String>> events = history.getEvents();
 
-  List<NumberPicker> numberPickers = List<NumberPicker>(4);
   List<int> _currentIntValue = [1, 9, 9, 5];
+  List<NumberPicker> _numberPickers = List<NumberPicker>(4);
 
   Game game = new Game();
-  List<int> gameScores = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +43,8 @@ class _GamePage extends State<GamePage> {
         children: <Widget>[
           ListTile(
             leading: Icon(Icons.history),
-            title: Text('${question}'),
-            subtitle: Text('이 사건이 일어난 연도는?'),
+            title: Text('$question'),
+            subtitle: const Text('이 사건이 일어난 연도는?'),
           ),
           ButtonBar(
             children: <Widget>[
@@ -83,12 +82,24 @@ class _GamePage extends State<GamePage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        numberPickers[0],
-        numberPickers[1],
-        numberPickers[2],
-        numberPickers[3],
+        _numberPickers[0],
+        _numberPickers[1],
+        _numberPickers[2],
+        _numberPickers[3],
       ],
     );
+  }
+
+  void _initializeNumberPicker() {
+    for (int i = 0; i < 4; ++i) {
+      _numberPickers[i] = new NumberPicker.integer(
+        initialValue: _currentIntValue[i],
+        minValue: 0,
+        maxValue: 9,
+        step: 1,
+        onChanged: (value) => setState(() => _currentIntValue[i] = value),
+      );
+    }
   }
 
   Widget _buildTryButton() {
@@ -110,13 +121,14 @@ class _GamePage extends State<GamePage> {
     return Expanded(
       child: ListView.builder(
         //padding: const EdgeInsets.all(8),
-        itemCount: gameScores.length,
+        itemCount: game.answers.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
             child: ListTile(
               leading: Text('${index + 1}'),
-              title: Text('${gameScores[index]}'),
-              subtitle: Text('0 Strike, 0 Ball'),
+              title: Text('${game.getPlayerAnswer(index)}'),
+              subtitle: Text(
+                  '${game.getStrike(index)} Strike, ${game.getBall(index)} Ball'),
             ),
           );
         },
@@ -130,20 +142,13 @@ class _GamePage extends State<GamePage> {
       myAnswer *= 10;
       myAnswer += _currentIntValue[i];
     }
-    setState(() {
-      gameScores.add(myAnswer);
-    });
-  }
-
-  void _initializeNumberPicker() {
-    for (int i = 0; i < 4; ++i) {
-      numberPickers[i] = new NumberPicker.integer(
-        initialValue: _currentIntValue[i],
-        minValue: 0,
-        maxValue: 9,
-        step: 1,
-        onChanged: (value) => setState(() => _currentIntValue[i] = value),
-      );
+    GameStatus status = game.tryAnswer(myAnswer);
+    if (status == GameStatus.clear) {
+      //Dialog
+    } else if (status == GameStatus.same_number) {
+      //Dialog
     }
+
+    setState(() {});
   }
 }
