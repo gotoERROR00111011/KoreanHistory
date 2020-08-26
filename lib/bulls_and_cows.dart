@@ -24,6 +24,10 @@ class Game {
     return _gameAnswer;
   }
 
+  int getCount() {
+    return answers.length;
+  }
+
   int getRandomYear() {
     Random rand = new Random();
     int year = 0;

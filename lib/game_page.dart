@@ -144,11 +144,65 @@ class _GamePage extends State<GamePage> {
     }
     GameStatus status = game.tryAnswer(myAnswer);
     if (status == GameStatus.clear) {
-      //Dialog
+      _showClearDialog();
     } else if (status == GameStatus.same_number) {
-      //Dialog
+      _showRuleDialog();
     }
-
     setState(() {});
+  }
+
+  Future<void> _showClearDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Game Clear!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('${game.getAnswer()}년'),
+                Text('${game.getCount()}번 만에 맞추셨습니다!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showRuleDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Rule'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('연도에는 중복되는 숫자가 없어야 합니다!'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
