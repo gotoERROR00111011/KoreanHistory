@@ -9,13 +9,13 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePage extends State<GamePage> {
+  Game game = new Game();
   static KoreanHistory history = new KoreanHistory();
   static List<List<String>> events = history.getEvents();
 
   List<int> _currentIntValue = [1, 9, 9, 5];
   List<NumberPicker> _numberPickers = List<NumberPicker>(4);
-
-  Game game = new Game();
+  ScrollController _scrollController = new ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +120,8 @@ class _GamePage extends State<GamePage> {
   Widget _buildRecord() {
     return Expanded(
       child: ListView.builder(
-        //padding: const EdgeInsets.all(8),
+        //reverse: true,
+        controller: _scrollController,
         itemCount: game.answers.length,
         itemBuilder: (BuildContext context, int index) {
           return Card(
@@ -149,6 +150,10 @@ class _GamePage extends State<GamePage> {
       _showRuleDialog();
     }
     setState(() {});
+    _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 100,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOut);
   }
 
   Future<void> _showClearDialog() async {
@@ -170,7 +175,8 @@ class _GamePage extends State<GamePage> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
             ),
           ],
